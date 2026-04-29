@@ -1,4 +1,4 @@
-import { Rate } from "../domain/Rate"; 
+/*import { Rate } from "../domain/Rate"; 
 import { RateRepository } from "../domain/RateRepository";
 
 export const createRate = async (
@@ -11,4 +11,6 @@ export const createRate = async (
 
   await repo.create(rate);
 };
+
 //cambiooo
+/*/
