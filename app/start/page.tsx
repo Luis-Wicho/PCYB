@@ -1,4 +1,4 @@
-import StartView from "@/modules/userS/presentation/StartView";
+import StartView from "@/modules/users/presentation/StartView";
 
 export default function Page(){
     return <StartView/>

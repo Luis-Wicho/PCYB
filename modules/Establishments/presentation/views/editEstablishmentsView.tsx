@@ -5,13 +5,13 @@ import Image from "next/image";
 import Swal from "sweetalert2";
 import { ArrowLeft } from 'lucide-react';
 
-export default function EditEstablishmentView() {
+export default function EditEstablishmentsView() {
   const { id } = useParams();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   // Dentro de EditEstablishmentView
 const [tamanios, setTamanios] = useState<any[]>([]);
-const [tarifas, setTarifas] = useState<any[]>([]);
+
   
   // Inicializamos con los nombres reales de tu base de datos
   const [formData, setFormData] = useState<any>({
@@ -22,7 +22,7 @@ const [tarifas, setTarifas] = useState<any[]>([]);
     estatus: "",
     giro_comercial: "",
     id_tamanio: "",
-    id_tarifa: "",
+    
     observaciones: ""
   });
 
@@ -30,10 +30,10 @@ const [tarifas, setTarifas] = useState<any[]>([]);
   const cargarCatalogos = async () => {
     try {
       // Cargamos todo en paralelo para mayor velocidad
-      const [resEst, resTam, resTar] = await Promise.all([
+      const [resEst, resTam] = await Promise.all([
         fetch(`/api/Establishments/${id}`),
         fetch(`/api/tamanio`), // Ajusta estas rutas a tus APIs reales
-        fetch(`/api/tarifas`)
+        
       ]);
 
       if (resEst.ok) {
@@ -47,7 +47,7 @@ const [tarifas, setTarifas] = useState<any[]>([]);
       }
 
       if (resTam.ok) setTamanios(await resTam.json());
-      if (resTar.ok) setTarifas(await resTar.json());
+      
 
     } catch (error) {
       console.error("Error cargando catálogos:", error);
@@ -75,10 +75,18 @@ const [tarifas, setTarifas] = useState<any[]>([]);
 
     if (result.isConfirmed) {
       try {
+      // Creamos una copia de los datos para no afectar el estado visual
+      // pero convirtiendo los IDs a números
+      const dataParaEnviar = {
+        ...formData,
+        id_tamanio: formData.id_tamanio === "" ? null : parseInt(formData.id_tamanio),
+        // estatus: formData.estatus === "" ? null : parseInt(formData.estatus), // Haz lo mismo si estatus es integer
+      };
+      
         const response = await fetch(`/api/Establishments/${id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(dataParaEnviar),
         });
 
         if (response.ok) {
@@ -91,9 +99,12 @@ const [tarifas, setTarifas] = useState<any[]>([]);
           });
           router.push("/Establishments");
         } else {
+          const errorData = await response.json();
+          console.error("Error del servidor:", errorData);
           throw new Error("Error en la respuesta");
         }
       } catch (error) {
+        console.error("Error al actualizar:", error);
         Swal.fire("Error", "No se pudo actualizar el registro", "error");
       }
     }
@@ -217,23 +228,6 @@ const [tarifas, setTarifas] = useState<any[]>([]);
   </select>
 </div>
 
-{/* Selector de Tarifa */}
-<div>
-  <label className="block text-xs font-bold text-teal-700 uppercase mb-2 ml-1">Tarifa Anual *</label>
-  <select
-    required
-    className="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-teal-500 outline-none appearance-none cursor-pointer"
-    value={formData.id_tarifa}
-    onChange={(e) => setFormData({...formData, id_tarifa: e.target.value})}
-  >
-    <option value="">Seleccionar tarifa</option>
-    {tarifas.map((tar) => (
-      <option key={tar.id_tarifa} value={tar.id_tarifa}>
-        ${tar.monto_base} {/* Ajusta 'monto_base' al nombre de tu columna */}
-      </option>
-    ))}
-  </select>
-</div>
 
           <div className="md:col-span-2">
             <label className="block text-xs font-bold text-teal-700 uppercase mb-2 ml-1">Observaciones</label>

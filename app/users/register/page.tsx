@@ -1,4 +1,4 @@
-import UserRegistrationView from "@/modules/userS/presentation/userRegistrationView";
+import UserRegistrationView from "@/modules/users/presentation/userRegistrationView";
 
 export default function Page(){
     return <UserRegistrationView/>
