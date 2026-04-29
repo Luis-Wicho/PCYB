@@ -1,4 +1,4 @@
-import { Rate } from "../domain/Rate";
+import { Rate } from "../domain/Rate"; 
 import { RateRepository } from "../domain/RateRepository";
 
 export const createRate = async (
