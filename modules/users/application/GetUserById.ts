@@ -1,4 +1,4 @@
-import { User } from "../domain/users.entity"
+import { User } from "../domain/user.entity"
 import { UserRepository } from "../domain/users.repository"
 
 export class GetUserById {
